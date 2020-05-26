@@ -3,8 +3,8 @@
 
 #Imports
 from gmusicapi import Mobileclient
-import tkFileDialog
-import tkSimpleDialog
+import tkinter.filedialog
+import tkinter.simpledialog
 import os.path
 import eyed3
 import codecs
@@ -13,13 +13,14 @@ import codecs
 eyed3.log.setLevel("ERROR")
 
 #Get the file name
-path = tkFileDialog.askopenfilename()
+path = tkinter.filedialog.askopenfilename()
 
 #Create the mobile client
 api = Mobileclient(False,True,True)
 
 #Login
-api.login('emailhere', 'pwdhere', Mobileclient.FROM_MAC_ADDRESS)
+#api.perform_oauth('C:\\Users\\Joshv\\Josh\\Programming\\Python\\googleMusic\\gMusicDeviceID.txt')
+api.oauth_login('b83fce595c6fd82bcfcfdd8e2e542d79f3c176bb0974c4bb34da2df10d95cec1')
 
 #Retrieve all playlists
 playlists = api.get_all_playlists(False, False)
@@ -44,12 +45,12 @@ playlistFileName = os.path.basename(path)
 playlistName = os.path.splitext(playlistFileName)[0]
 
 #Print the playlist file name
-print "-----------------------------------------"
-print playlistName
-print "-----------------------------------------"
+print("-----------------------------------------")
+print(playlistName)
+print("-----------------------------------------")
 
 #Loop through the file
-for line in file(path):
+for line in open(path):
 	#If the line is not a comment
 	if not line.startswith('#'):
 		#Strip the line
@@ -59,17 +60,17 @@ for line in file(path):
 		paths.append(line)
 
 #Get the encoding of the file
-raw = file(path).read(min(32, os.path.getsize(path)))
+raw = open(path).read(min(32, os.path.getsize(path)))
 
 #Check to see if it's utf 8
-if(raw.startswith(codecs.BOM_UTF8)):
+if(raw.startswith('\xef\xbb\xbf')):
 	#Fix the first path
 	paths[0] = (paths[0])[3:]
 
 #Loop through the paths
 for filePath in paths:
 	#If the file exists, get the info
-	if os.path.isfile(filePath):
+	if os.path.exists(filePath):
 		#Open the file
 		mp3File = eyed3.load(filePath)
 		
@@ -81,9 +82,9 @@ for filePath in paths:
 for playlist in playlists:
 	if playlist['name'] == playlistName:
 		#Log match found
-		print "-----------------------------------------"
-		print "Playlist name match found"
-		print "-----------------------------------------"
+		print("-----------------------------------------")
+		print("Playlist name match found")
+		print("-----------------------------------------")
 		
 		#Loop through the playlist contents looking for entries corresponding to the current playlist
 		for entry in playlistContents:
@@ -100,9 +101,9 @@ for playlist in playlists:
 							gTracks.append(song['title'])
 		#Compare the lengths of the arrays for the initial check
 		if(len(lArtists) == len(gArtists)):
-			print "-----------------------------------------"
-			print "Playlist lengths are equal, compare playlists..."
-			print "-----------------------------------------"
+			print("-----------------------------------------")
+			print("Playlist lengths are equal, compare playlists...")
+			print("-----------------------------------------")
 			
 			#Current mismatch count
 			mismatchCount = 0
@@ -112,19 +113,19 @@ for playlist in playlists:
 				#If a mismatch is found
 				if((lArtists[x] != gArtists[x]) or (lTracks[x] != gTracks[x])):
 					#Log the mismatch
-					print "Mismatch found:"
-					print "Local Artist: ", lArtists[x], "Local Track: ", lTracks[x]
-					print "gMusic Artist: ", gArtists[x], "gMusic Title: ", gTracks[x]
+					print("Mismatch found:")
+					print("Local Artist: ", lArtists[x], "Local Track: ", lTracks[x])
+					print("gMusic Artist: ", gArtists[x], "gMusic Title: ", gTracks[x])
 					
 					#Increment the count
 					mismatchCount = mismatchCount + 1
 					
 			#Print the total number of mismatches
-			print "Total Number of Mismatches: ", mismatchCount
+			print("Total Number of Mismatches: ", mismatchCount)
 		#Else, lengths are not equal
 		else:
-			print "-----------------------------------------"
-			print "Playlist lengths are not equal"
-			print "Local Playlist Length: ", len(lArtists), "gMusic Playlist Length: ", len(gArtists)
-			print "Exiting...."
-			print "-----------------------------------------"
+			print("-----------------------------------------")
+			print("Playlist lengths are not equal")
+			print("Local Playlist Length: ", len(lArtists), "gMusic Playlist Length: ", len(gArtists))
+			print("Exiting....")
+			print("-----------------------------------------")

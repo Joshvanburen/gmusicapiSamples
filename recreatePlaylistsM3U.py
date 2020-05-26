@@ -8,16 +8,16 @@ import eyed3
 from mutagen.mp3 import MP3
 
 #Root music directory to search through
-rootDir = "C:\Users\Joshv\Josh\Josh's Music"
+rootDir = "C:\\Users\\Joshv\\Josh\\Josh's Music"
 
 #Directory to write the playlist file to
-writeDir = "C:\Users\Joshv\Desktop"
+writeDir = "C:\\Users\\Joshv\\Desktop"
 
 #Create the mobile client
 api = Mobileclient()
 
-#Login
-api.login('Emailhere', 'pwdhere', Mobileclient.FROM_MAC_ADDRESS)
+#api.perform_oauth('C:\\Users\\Joshv\\Josh\\Programming\\Python\\googleMusic\\gMusicDeviceID.txt')
+api.oauth_login('b83fce595c6fd82bcfcfdd8e2e542d79f3c176bb0974c4bb34da2df10d95cec1')
 
 #Retrieve all playlists
 playlists = api.get_all_playlists(False, False)
@@ -31,7 +31,7 @@ library = api.get_all_songs(False, False)
 #loop through all of the playlists
 for playlist in playlists:	
 	#Output the name of the playlist
-	print "Playlist Name: " + playlist['name']
+	print("Playlist Name: " + playlist['name'])
 	
 	#Path to write to
 	m3uFilePath = writeDir + "\\" + playlist['name'] + ".m3u"
@@ -64,7 +64,7 @@ for playlist in playlists:
 									#If the tag data matches
 									if((song['artist'] == mp3File['TPE1']) and (song['title'] == mp3File['TIT2'])):
 										#Print the playlist, artist and title info
-										print playlist['name'] + ": " + song['artist'] + " - " + song['title'] + " Path: " + os.path.join(currDir, file)
+										print(playlist['name'] + ": " + song['artist'] + " - " + song['title'] + " Path: " + os.path.join(currDir, file))
 										
 										#Write to the file
 										m3uFile.write(os.path.join(currDir, file) + '\n')

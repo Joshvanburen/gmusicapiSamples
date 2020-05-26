@@ -3,8 +3,8 @@
 
 #Imports
 from gmusicapi import Mobileclient
-import tkFileDialog
-import tkSimpleDialog
+import tkinter.filedialog
+import tkinter.simpledialog
 import os.path
 import eyed3
 import codecs
@@ -13,7 +13,7 @@ import codecs
 eyed3.log.setLevel("ERROR")
 
 #Root playlist directory to search through
-rootDir = "C:\Users\Joshv\Music\MusicBee\Playlists"
+rootDir = "C:\\Users\\Joshv\\Music\\MusicBee\\Playlists"
 
 #Array for the playlist file paths
 playlistFilePaths = []
@@ -35,7 +35,8 @@ for currDir, subDirectories, files in os.walk(rootDir):
 api = Mobileclient(False,True,True)
 
 #Login
-api.login('Enteremailhere', 'enterpwdhere', Mobileclient.FROM_MAC_ADDRESS)
+#api.perform_oauth('C:\\Users\\Joshv\\Josh\\Programming\\Python\\googleMusic\\gMusicDeviceID.txt')
+api.oauth_login('b83fce595c6fd82bcfcfdd8e2e542d79f3c176bb0974c4bb34da2df10d95cec1')
 
 #Retrieve all playlists
 playlists = api.get_all_playlists(False, False)
@@ -62,12 +63,12 @@ for playlistFilePath in playlistFilePaths:
 	playlistName = os.path.splitext(playlistFileName)[0]
 
 	#Print the playlist file name
-	print "-----------------------------------------"
-	print playlistName
-	print "-----------------------------------------"
+	print("-----------------------------------------")
+	print(playlistName)
+	print("-----------------------------------------")
 
 	#Loop through the file
-	for line in file(playlistFilePath):
+	for line in open(playlistFilePath):
 		#If the line is not a comment
 		if not line.startswith('#'):
 			#Strip the line
@@ -77,10 +78,11 @@ for playlistFilePath in playlistFilePaths:
 			paths.append(line)
 
 	#Get the encoding of the file
-	raw = file(playlistFilePath).read(min(32, os.path.getsize(playlistFilePath)))
+	raw = open(playlistFilePath).read(min(32, os.path.getsize(playlistFilePath)))
 
 	#Check to see if it's utf 8
-	if(raw.startswith(codecs.BOM_UTF8)):
+	if(raw.startswith('\xef\xbb\xbf')):
+		print("Raw found........")
 		#Fix the first path
 		paths[0] = (paths[0])[3:]
 
@@ -95,15 +97,15 @@ for playlistFilePath in playlistFilePaths:
 				lArtists.append(mp3File.tag.artist)
 				lTracks.append(mp3File.tag.title)
 			except:
-				print filePath
+				print(filePath)
 
 	#Look for the correct playlist
 	for playlist in playlists:
 		if playlist['name'] == playlistName:
 			#Log match found
-			print "-----------------------------------------"
-			print "Playlist name match found"
-			print "-----------------------------------------"
+			print("-----------------------------------------")
+			print("Playlist name match found")
+			print("-----------------------------------------")
 			
 			#Loop through the playlist contents looking for entries corresponding to the current playlist
 			for entry in playlistContents:
@@ -120,9 +122,9 @@ for playlistFilePath in playlistFilePaths:
 								gTracks.append(song['title'])
 			#Compare the lengths of the arrays for the initial check
 			if(len(lArtists) == len(gArtists)):
-				print "-----------------------------------------"
-				print "Playlist lengths are equal, compare playlists..."
-				print "-----------------------------------------"
+				print("-----------------------------------------")
+				print("Playlist lengths are equal, compare playlists...")
+				print("-----------------------------------------")
 				
 				#Current mismatch count
 				mismatchCount = 0
@@ -132,19 +134,19 @@ for playlistFilePath in playlistFilePaths:
 					#If a mismatch is found
 					if((lArtists[x] != gArtists[x]) or (lTracks[x] != gTracks[x])):
 						#Log the mismatch
-						print "Mismatch found:"
-						print "Local Artist: ", lArtists[x], "Local Track: ", lTracks[x]
-						print "gMusic Artist: ", gArtists[x], "gMusic Title: ", gTracks[x]
+						print("Mismatch found:")
+						print("Local Artist: ", lArtists[x], "Local Track: ", lTracks[x])
+						print("gMusic Artist: ", gArtists[x], "gMusic Title: ", gTracks[x])
 						
 						#Increment the count
 						mismatchCount = mismatchCount + 1
 						
 				#Print the total number of mismatches
-				print "Total Number of Mismatches: ", mismatchCount
+				print("Total Number of Mismatches: ", mismatchCount)
 			#Else, lengths are not equal
 			else:
-				print "-----------------------------------------"
-				print "Playlist lengths are not equal"
-				print "Local Playlist Length: ", len(lArtists), "gMusic Playlist Length: ", len(gArtists)
-				print "Exiting...."
-				print "-----------------------------------------"
+				print("-----------------------------------------")
+				print("Playlist lengths are not equal")
+				print("Local Playlist Length: ", len(lArtists), "gMusic Playlist Length: ", len(gArtists))
+				print("Exiting....")
+				print("-----------------------------------------")

@@ -3,13 +3,14 @@
 
 #Imports
 from gmusicapi import Mobileclient
-import tkFileDialog
-import tkSimpleDialog
+import tkinter.filedialog
+import tkinter.simpledialog
 import os.path
 import eyed3
+import codecs
 
 #Get the file name
-path = tkFileDialog.askopenfilename()
+path = tkinter.filedialog.askopenfilename()
 
 #Create the array for the file names, artists, tracks
 paths = []
@@ -54,7 +55,8 @@ pListName = tkSimpleDialog.askstring('Playlist Name', 'What is the name of the p
 api = Mobileclient()
 
 #Login
-api.login('Emailhere', 'pwdhere', Mobileclient.FROM_MAC_ADDRESS)
+#api.perform_oauth('C:\\Users\\Joshv\\Josh\\Programming\\Python\\googleMusic\\gMusicDeviceID.txt')
+api.oauth_login('b83fce595c6fd82bcfcfdd8e2e542d79f3c176bb0974c4bb34da2df10d95cec1')
 # => True
 
 #Get all of the songs in the library
@@ -74,7 +76,7 @@ for i in range(len(tracks)):
 		if (iTrack['title'] == tracks[i]) and (iTrack['artist'] == artists[i]):
 			#Add the track to the list
 			pListTracks.append(iTrack['id'])
-			#print iTrack['id']
+			#print(iTrack['id'])
 
 
 #Add the songs to the playlist
